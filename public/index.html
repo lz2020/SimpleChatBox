@@ -21,20 +21,21 @@
 
       <!-- 右侧聊天区 -->
       <div class="chat-area">
-        <div class="message-container" id="message-container">
-          <!-- 聊天消息将通过JavaScript动态加载 -->
+        <div class="message-container-wrapper">
+          <div class="message-container" id="message-container">
+            <!-- 聊天消息将通过JavaScript动态加载 -->
+          </div>
         </div>
         <div class="input-box">
           <div class="input-box-inner">
-            <textarea
-              id="user-input"
-              rows="1"
-              placeholder="输入消息..."
-            ></textarea>
+            <div class="input-wrapper">
+              <textarea id="user-input" placeholder="输入消息..."></textarea>
+            </div>
             <div class="action-bar">
-              <button class="send-btn" id="send-btn">发送</button>
+              <button class="send-btn" id="send-btn"></button>
             </div>
           </div>
+          <div class="warm-tip">内容由 AI 生成，请仔细甄别</div>
         </div>
       </div>
     </div>

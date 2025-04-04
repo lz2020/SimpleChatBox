@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
   async function initialize() {
     await loadConversations();
     await loadUserConfig();
-    updateMessageContainerHeight();
   }
 
   // 加载用户配置
@@ -236,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 重置输入框高度
     userInput.style.height = "auto";
     inputBoxInner.style.height = "auto";
-    updateMessageContainerHeight();
 
     try {
       // 渲染用户消息
@@ -309,14 +307,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const copyBtn = document.createElement("button");
       copyBtn.className = "copy-btn";
-      copyBtn.textContent = "复制";
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "tooltip";
+      tooltip.textContent = "复制";
+      copyBtn.appendChild(tooltip);
+
       copyBtn.addEventListener("click", () => {
         navigator.clipboard
           .writeText(message.content)
           .then(() => {
-            copyBtn.textContent = "已复制";
+            copyBtn.classList.add("copied");
             setTimeout(() => {
-              copyBtn.textContent = "复制";
+              copyBtn.classList.remove("copied");
             }, 2000);
           })
           .catch((err) => {
@@ -363,46 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
   userInput.addEventListener("input", () => {
     // 重置输入框高度
     userInput.style.height = "auto";
-
-    // 计算新高度，但不超过最大限制
-    const newHeight = Math.min(
-      userInput.scrollHeight,
-      window.innerHeight * (2 / 7) - 50 // 最大高度为视窗高度的2/7减去按钮和内边距
-    );
-
-    userInput.style.height = `${newHeight}px`;
-
-    // 调整输入框容器高度
-    const containerHeight = newHeight + 40; // 加上padding和按钮区域的高度
-    inputBoxInner.style.height = `${containerHeight}px`;
-
-    // 更新消息容器的高度，以避免被输入框遮挡
-    updateMessageContainerHeight();
-  });
-
-  // 添加鼠标滚轮事件监听
-  messageContainer.addEventListener("wheel", (e) => {
-    // 当输入框扩展时，允许滚动调整聊天区域位置
-    if (
-      inputBoxInner.offsetHeight > 60 &&
-      messageContainer.scrollHeight > messageContainer.offsetHeight
-    ) {
-      // 默认滚动行为已经足够，不需要额外处理
+    if (userInput.value.length > 0) {
+      userInput.style.height = userInput.scrollHeight + "px";
     }
-  });
-
-  // 更新消息容器的高度
-  function updateMessageContainerHeight() {
-    // 计算消息容器的新高度
-    const chatAreaHeight = document.querySelector(".chat-area").offsetHeight;
-    const inputBoxHeight = inputBox.offsetHeight;
-
-    messageContainer.style.height = `${chatAreaHeight - inputBoxHeight}px`;
-  }
-
-  // 监听窗口大小变化
-  window.addEventListener("resize", () => {
-    updateMessageContainerHeight();
   });
 
   newChatBtn.addEventListener("click", createNewConversation);
